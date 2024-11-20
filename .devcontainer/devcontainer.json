@@ -15,11 +15,15 @@
 	"forwardPorts": [3000],
 
 	// the only way to ensure proper file permissions on both Linux and Windows hosts
-	"postAttachCommand": "sudo chown -R vscode:vscode /workspaces"
+	"postAttachCommand": "sudo chown -R vscode:vscode /workspaces",
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install"
-	// "postCreateCommand": "yarn install --immutable"
+	"postCreateCommand": {
+		"yarn install": [ "/usr/bin/bash", "-i", "-c", "yarn install > /tmp/yarn-install.log" ],
+		"echo id": "echo $(id) > /tmp/id",
+		"cat ~/.bashrc": "cat ~/.bashrc > /tmp/bashrc"
+	}
+	// "postCreateCommand": "yarn install --immutable",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
