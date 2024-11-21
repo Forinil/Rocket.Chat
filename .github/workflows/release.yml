@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+
+jobs:
+  release-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # add step that reads required meteor version from apps/meteor/.meteor/release
+
+      - name: Set up Meteor.js
+        uses: meteorengineer/setup-meteor@v2
+        with:
+          meteor-release: '2.16' # Must be the same as in apps/meteor/.meteor/release
+
+      - name: Build
+        run: |
+          set +e
+          yarn install
+          
+          pushd "${{ github.workspace }}/apps/meteor/"
+          yarn build:ci
+          # mkdir -p "${{ github.workspace }}/build"
+          # meteor build --server-only --directory "${{ github.workspace }}/build/rocket.chat"
+          # pushd "${{ github.workspace }}/build/rocket.chat"
+          # tar czf "${{ github.workspace }}/build/rocket.chat.tgz" bundle
+          pushd /tmp/dist/
+          tar czf "${{ github.workspace }}/rocket.chat.tgz" bundle
+          pushd +2
+          # rm -rf rocket.chat/
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rocket.chat.${{ github.ref }}.tgz
+          path: "${{ github.workspace }}/rocket.chat.tgz"
+
+      # - name: Upload to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     file: "${{ github.workspace }}/rocket.chat.tgz"
+      #     asset_name: rocket.chat.${{ github.ref }}.tgz
+      #     tag: ${{ github.ref }}
+      #     overwrite: true
