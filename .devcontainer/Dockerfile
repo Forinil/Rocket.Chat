@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 RUN <<-EOF
 set -e
 apt-get update
-apt-get install -y curl python3 python3-pip
+apt-get install -y g++ build-essential git curl python3 python3-pip
 apt-get clean
 rm -r /var/lib/apt/lists/*
 EOF
