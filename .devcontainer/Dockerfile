@@ -18,7 +18,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 nvm install 14.21.3
-
+corepack enable
 npm install -g meteor@2.16.0
-npm install -g yarn@1.22.18
 EOF
