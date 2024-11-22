@@ -48,6 +48,7 @@ jobs:
       - name: Install Python 3.10 via conda
         uses: conda-incubator/setup-miniconda@v3
         with:
+          miniconda-version: latest 
           python-version: 3.10
 
       - name: Set up Node.js ${{ needs.tool-versions.outputs.node-version }}
