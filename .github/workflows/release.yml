@@ -45,25 +45,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ needs.tool-versions.outputs.node-version }}
+      - name: Install Python 3.10 via conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: 3.10
+
+      - name: Set up Node.js ${{ needs.tool-versions.outputs.node-version }}
         id: node-version
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ needs.tool-versions.outputs.node-version }}
           # cache: 'yarn'
 
-      - name: Enable corepack
+      - name: Enable corepack to install Yarn
         run: |
           set -e
           corepack enable
 
       - name: Show tool versions
+        shell: bash -el {0}
         run: |
           set -e
-          node --version
-          npm --version
-          yarn --version
-          # meteor --version
+          conda --version
+          echo "Node $node --version)"
+          echo "NPM $(npm --version)"
+          echo "Yarn $(yarn --version)"
+          # echo "Meteor: $(meteor --version)"
           python --version
 
       - name: Dummy failing job
