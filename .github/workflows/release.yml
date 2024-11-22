@@ -8,31 +8,45 @@ on:
       - main
 
 jobs:
-  node-version:
+  tool-versions:
     name: ⚙️ Variables Setup
     runs-on: ubuntu-latest
     outputs:
       node-version: ${{ steps.node_version.outputs.node-version }}
+      meteor-version: ${{ steps.meteor_version.outputs.meteor-version }}
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             package.json
+            apps/meteor/.meteor/release
           sparse-checkout-cone-mode: false
           ref: ${{ github.ref }}
 
       - id: node_version
         run: |
+          set -e
           NODE_VERSION=$(node -p "require('./package.json').engines.node")
           echo "NODE_VERSION: ${NODE_VERSION}"
           echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
-
+      
+      - id: meteor_version
+        run: |
+          set -e
+          IFS="@" read -ra METEOR_VERSION_ARRAY <<< $(cat apps/meteor/.meteor/release)
+          METEOR_VERSION="${METEOR_ARRAY[1]}"
+          echo "METEOR_VERSION: ${METEOR_VERSION}"
+          echo "meteor-version=${METEOR_VERSION}" >> $GITHUB_OUTPUT
   release-zip:
-    needs: [node-version]
+    name: 🚀 Release archive
+    needs: [tool-versions]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Dummy failing job
+        run: exit 1
 
       # add step that reads required meteor version from apps/meteor/.meteor/release
 
@@ -40,17 +54,6 @@ jobs:
       #   uses: meteorengineer/setup-meteor@v2
       #   with:
       #     meteor-release: '2.16' # Must be the same as in apps/meteor/.meteor/release
-
-      - uses: ./.github/actions/meteor-build
-        with:
-          node-version: ${{ needs.node-version.outputs.node-version }}
-          coverage: false
-
-      - name: Restore build
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          path: /tmp/build
 
       # - name: Upload to release
       #   uses: svenstaro/upload-release-action@v2
