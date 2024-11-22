@@ -34,7 +34,7 @@ jobs:
         run: |
           set -e
           IFS="@" read -ra METEOR_VERSION_ARRAY <<< $(cat apps/meteor/.meteor/release)
-          METEOR_VERSION="${METEOR_ARRAY[1]}"
+          METEOR_VERSION="${METEOR_VERSION_ARRAY[1]}"
           echo "METEOR_VERSION: ${METEOR_VERSION}"
           echo "meteor-version=${METEOR_VERSION}" >> $GITHUB_OUTPUT
   release-zip:
