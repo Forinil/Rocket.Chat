@@ -45,6 +45,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Use Node.js ${{ needs.tool-versions.outputs.node-version }}
+        id: node-version
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: ${{ needs.tool-versions.outputs.node-version }}
+          # cache: 'yarn'
+
+      - name: Enable corepack
+        run: |
+          set -e
+          corepack enable
+
+      - name: Show tool versions
+        run: |
+          set -e
+          node --version
+          npm --version
+          yarn --version
+          # meteor --version
+          python --version
+
       - name: Dummy failing job
         run: exit 1
 
