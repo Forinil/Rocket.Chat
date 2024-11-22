@@ -8,7 +8,27 @@ on:
       - main
 
 jobs:
+  node-version:
+    name: ⚙️ Variables Setup
+    runs-on: ubuntu-latest
+    outputs:
+      node-version: ${{ steps.node_version.outputs.node-version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            package.json
+          sparse-checkout-cone-mode: false
+          ref: ${{ github.ref }}
+
+      - id: node_version
+        run: |
+          NODE_VERSION=$(node -p "require('./package.json').engines.node")
+          echo "NODE_VERSION: ${NODE_VERSION}"
+          echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
+
   release-zip:
+    needs: [node-version]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,38 +36,27 @@ jobs:
 
       # add step that reads required meteor version from apps/meteor/.meteor/release
 
-      - name: Set up Meteor.js
-        uses: meteorengineer/setup-meteor@v2
-        with:
-          meteor-release: '2.16' # Must be the same as in apps/meteor/.meteor/release
+      # - name: Set up Meteor.js
+      #   uses: meteorengineer/setup-meteor@v2
+      #   with:
+      #     meteor-release: '2.16' # Must be the same as in apps/meteor/.meteor/release
 
-      - name: Build
-        run: |
-          set +e
-          yarn install
-          
-          pushd "${{ github.workspace }}/apps/meteor/"
-          yarn build:ci
-          # mkdir -p "${{ github.workspace }}/build"
-          # meteor build --server-only --directory "${{ github.workspace }}/build/rocket.chat"
-          # pushd "${{ github.workspace }}/build/rocket.chat"
-          # tar czf "${{ github.workspace }}/build/rocket.chat.tgz" bundle
-          pushd /tmp/dist/
-          tar czf "${{ github.workspace }}/rocket.chat.tgz" bundle
-          pushd +2
-          # rm -rf rocket.chat/
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v4
+      - uses: ./.github/actions/meteor-build
         with:
-          name: rocket.chat.${{ github.ref }}.tgz
-          path: "${{ github.workspace }}/rocket.chat.tgz"
+          node-version: ${{ needs.node-version.outputs.node-version }}
+          coverage: false
+
+      - name: Restore build
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: /tmp/build
 
       # - name: Upload to release
       #   uses: svenstaro/upload-release-action@v2
       #   with:
       #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: "${{ github.workspace }}/rocket.chat.tgz"
+      #     file: "/tmp/build/Rocket.Chat.tar.gz"
       #     asset_name: rocket.chat.${{ github.ref }}.tgz
       #     tag: ${{ github.ref }}
       #     overwrite: true
