@@ -67,28 +67,26 @@ jobs:
         shell: bash -el {0}
         run: |
           set -e
-          conda --version
-          echo "Node $node --version)"
+          echo "Node $(node --version)"
           echo "NPM $(npm --version)"
           echo "Yarn $(yarn --version)"
           # echo "Meteor: $(meteor --version)"
+          conda --version
+          conda env list
           python --version
+
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: yarn install
 
       - name: Dummy failing job
         run: exit 1
 
-      # add step that reads required meteor version from apps/meteor/.meteor/release
-
-      # - name: Set up Meteor.js
-      #   uses: meteorengineer/setup-meteor@v2
-      #   with:
-      #     meteor-release: '2.16' # Must be the same as in apps/meteor/.meteor/release
-
-      # - name: Upload to release
-      #   uses: svenstaro/upload-release-action@v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: "/tmp/build/Rocket.Chat.tar.gz"
-      #     asset_name: rocket.chat.${{ github.ref }}.tgz
-      #     tag: ${{ github.ref }}
-      #     overwrite: true
+      - name: Upload to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "/tmp/build/Rocket.Chat.tar.gz"
+          asset_name: Rocket.Chat.${{ github.ref }}.tgz
+          tag: ${{ github.ref }}
+          overwrite: true
