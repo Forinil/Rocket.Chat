@@ -49,7 +49,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          channels: conda-forge
+          # channels: conda-forge
           conda-remove-defaults: "true" 
           python-version: "3.10"
 
@@ -85,6 +85,10 @@ jobs:
       - name: Install dependencies
         shell: bash -el {0}
         run: yarn install
+
+      - name: Build
+        shell: bash -el {0}
+        run: yarn build:ci
 
       - name: Dummy failing job
         run: exit 1
