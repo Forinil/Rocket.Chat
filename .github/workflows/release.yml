@@ -9,7 +9,7 @@ on:
 
 jobs:
   tool-versions:
-    name: ⚙️ Variables Setup
+    name: ⚙️ Set up Variables
     runs-on: ubuntu-latest
     outputs:
       node-version: ${{ steps.node_version.outputs.node-version }}
@@ -48,10 +48,15 @@ jobs:
       - name: Install Python 3.10 via conda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          miniconda-version: latest
+          miniforge-version: latest
           channels: conda-forge
           conda-remove-defaults: "true" 
           python-version: "3.10"
+
+      - name: Check conda config
+        shell: bash -el {0}
+        run: |
+          conda config --show-sources
 
       - name: Set up Node.js ${{ needs.tool-versions.outputs.node-version }}
         id: node-version
