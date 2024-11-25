@@ -25,12 +25,12 @@ nvm install 14.21.3
 corepack enable
 npm install -g meteor@2.16.0
 
-mkdir -p /home/vscode/miniconda3
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /home/vscode/miniconda3/miniconda.sh
-bash /home/vscode/miniconda3/miniconda.sh -b -u -p /home/vscode/miniconda3
-rm /home/vscode/miniconda3/miniconda.sh
+mkdir -p /home/vscode/miniforge3
+curl -fsSL "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o /home/vscode/miniforge3/miniforge3.sh
+bash /home/vscode/miniforge3/miniforge3.sh -b -u -p /home/vscode/miniforge3
+rm /home/vscode/miniforge3/miniforge3.sh
 
-source /home/vscode/miniconda3/bin/activate
+source /home/vscode/miniforge3/bin/activate
 conda init --all
 conda create -n py310 python=3.10
 
