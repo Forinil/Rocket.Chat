@@ -94,7 +94,7 @@ jobs:
     needs: [build]
     if: (github.event_name == 'release')
     runs-on: ubuntu-latest
-    jobs:
+    steps:
       - name: Download the archive
         uses: actions/download-artifact@v4
         with:
