@@ -3,9 +3,7 @@ name: Release
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - main
+  # push: # Uncomment to build the artifact on every push
 
 jobs:
   tool-versions:
@@ -106,6 +104,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "Rocket.Chat.tar.gz"
-          asset_name: Rocket.Chat.${{ github.ref }}.tgz
+          asset_name: Rocket.Chat.${{ github.ref_name }}.tgz
           tag: ${{ github.ref }}
           overwrite: true
