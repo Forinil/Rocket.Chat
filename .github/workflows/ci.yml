@@ -483,7 +483,8 @@ jobs:
   deploy:
     name: 🚀 Publish build assets
     runs-on: ubuntu-20.04
-    if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
+    # if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
+    if: ${{ false }}  # disable for now
     needs: [build-gh-docker, release-versions]
 
     steps:
@@ -568,7 +569,8 @@ jobs:
   docker-image-publish:
     name: 🚀 Publish Docker Image (main)
     runs-on: ubuntu-20.04
-    needs: [deploy, build-docker-preview, release-versions]
+    needs: [build-docker-preview, release-versions]
+    # needs: [deploy, build-docker-preview, release-versions]
 
     strategy:
       matrix:

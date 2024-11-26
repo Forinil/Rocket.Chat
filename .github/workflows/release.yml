@@ -3,12 +3,12 @@ name: Release
 on:
   release:
     types: [published]
-  # push: # Uncomment to build the artifact on every push
+  push: # Uncomment to build the artifact on every push
 
 jobs:
   tool-versions:
     name: ⚙️ Set up Variables
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       node-version: ${{ steps.node_version.outputs.node-version }}
       meteor-version: ${{ steps.meteor_version.outputs.meteor-version }}
@@ -36,10 +36,16 @@ jobs:
   build:
     name: 📦 Build Rocket.Chat
     needs: [tool-versions]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Display user
+        run: id
+      - name: Install C++ build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ build-essential
       - name: Install Python 3.10 via conda
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -102,7 +108,7 @@ jobs:
     name: 🚀 Attach the build to the release
     needs: [build]
     if: (github.event_name == 'release')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download the archive
         uses: actions/download-artifact@v4
