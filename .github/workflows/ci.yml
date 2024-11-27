@@ -569,7 +569,7 @@ jobs:
   docker-image-publish:
     name: 🚀 Publish Docker Image (main)
     runs-on: ubuntu-20.04
-    needs: [build-docker-preview, release-versions]
+    needs: [build-gh-docker, build-docker-preview, release-versions]
     # needs: [deploy, build-docker-preview, release-versions]
 
     strategy:
