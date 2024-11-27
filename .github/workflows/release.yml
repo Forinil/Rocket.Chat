@@ -3,7 +3,7 @@ name: Release
 on:
   release:
     types: [published]
-  push: # Uncomment to build the artifact on every push
+  # push: # Uncomment to build the artifact on every push
 
 jobs:
   tool-versions:

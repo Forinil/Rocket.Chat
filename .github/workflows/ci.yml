@@ -577,8 +577,9 @@ jobs:
         # this is currently a mix of variants and different images
         release: ['official', 'preview', 'alpine']
 
-    env:
-      IMAGE_NAME: 'rocketchat/rocket.chat'
+    # Move to Action variables
+    # env:
+    #   IMAGE_NAME: 'rocketchat/rocket.chat'
 
     steps:
       - name: Login to DockerHub
