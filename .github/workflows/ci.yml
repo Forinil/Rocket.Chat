@@ -577,9 +577,10 @@ jobs:
         # this is currently a mix of variants and different images
         release: ['official', 'preview', 'alpine']
 
-    # Move to Action variables
-    # env:
-    #   IMAGE_NAME: 'rocketchat/rocket.chat'
+    env:
+      # Move the value from environment to configuration variable
+      # IMAGE_NAME: 'rocketchat/rocket.chat'
+      IMAGE_NAME: ' ${{ vars.IMAGE_NAME }}'
 
     steps:
       - name: Login to DockerHub
