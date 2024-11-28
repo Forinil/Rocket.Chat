@@ -683,7 +683,8 @@ jobs:
   services-docker-image-publish:
     name: 🚀 Publish Docker Image (services)
     runs-on: ubuntu-20.04
-    needs: [deploy, release-versions]
+    # needs: [deploy, release-versions]
+    needs: [build-gh-docker, release-versions]
 
     strategy:
       matrix:
@@ -722,7 +723,8 @@ jobs:
 
       - name: Publish Docker images
         run: |
-          DH_IMAGE_NAME="rocketchat/${{ matrix.service }}-service"
+          # DH_IMAGE_NAME="rocketchat/${{ matrix.service }}-service"
+          DH_IMAGE_NAME="${{ vars.IMAGE_REPOSITORY }}/${{ matrix.service }}-service"
 
           # 'develop' or 'tag'
           DOCKER_TAG=$GITHUB_REF_NAME
