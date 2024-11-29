@@ -55,9 +55,9 @@ jobs:
 
       - id: by-tag
         run: |
-          if echo "$GITHUB_REF_NAME" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' ; then
+          if echo "$GITHUB_REF_NAME" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-hive.[0-9]+)?$' ; then
             RELEASE="latest"
-          elif echo "$GITHUB_REF_NAME" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' ; then
+          elif echo "$GITHUB_REF_NAME" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-hive.[0-9]+)?-rc\.[0-9]+$' ; then
             RELEASE="release-candidate"
           fi
           echo "RELEASE: ${RELEASE}"
@@ -85,6 +85,7 @@ jobs:
   notify-draft-services:
     name: 🚀 Notify external services - draft
     runs-on: ubuntu-20.04
+    if: ${{ false }}  # disable
     needs: [release-versions]
     steps:
       - uses: actions/checkout@v4
@@ -126,7 +127,8 @@ jobs:
 
   packages-build:
     name: 📦 Build Packages
-    needs: [release-versions, notify-draft-services]
+    # needs: [release-versions, notify-draft-services]
+    needs: [release-versions]
     runs-on: ubuntu-20.04
     steps:
       - name: Github Info
@@ -484,7 +486,7 @@ jobs:
     name: 🚀 Publish build assets
     runs-on: ubuntu-20.04
     # if: github.event_name == 'release' || github.ref == 'refs/heads/develop'
-    if: ${{ false }}  # disable for now
+    if: ${{ false }}  # disable
     needs: [build-gh-docker, release-versions]
 
     steps:
@@ -774,6 +776,7 @@ jobs:
   notify-services:
     name: 🚀 Notify external services
     runs-on: ubuntu-20.04
+    if: ${{ false }}  # disable
     needs:
       - services-docker-image-publish
       - docker-image-publish
@@ -821,6 +824,7 @@ jobs:
   trigger-dependent-workflows:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
+    if: ${{ false }}  # disable
     needs:
       - services-docker-image-publish
       - docker-image-publish
@@ -837,6 +841,7 @@ jobs:
     name: Update Version Durability
 
     if: github.event_name == 'release'
+    if: ${{ false }}  # disable
     needs:
       - services-docker-image-publish
       - docker-image-publish
