@@ -823,7 +823,7 @@ jobs:
 
   trigger-dependent-workflows:
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    # if: github.event_name == 'release'
     if: ${{ false }}  # disable
     needs:
       - services-docker-image-publish
